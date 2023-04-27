@@ -1,7 +1,10 @@
-import { Box, Grid, Skeleton, SkeletonText } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import House from "../components/House";
+import HouseSkeleton from "../components/HouseSkeleton";
+import { useState } from "react";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   return (
     <Grid
       columnGap={8}
@@ -20,13 +23,11 @@ export default function Home() {
       }}
       py={8}
     >
-      <Box>
-        <Skeleton h="310" rounded={"2xl"} mb={3} />
-        <SkeletonText w="70%" noOfLines={3} />
-      </Box>
-      {[1, 1, 1, 1, 1, 1, 1].map((index) => (
-        <House />
-      ))}
+      {isLoading
+        ? [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((index) => (
+            <HouseSkeleton key={index} />
+          ))
+        : null}
     </Grid>
   );
 }
