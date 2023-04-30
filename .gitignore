@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,visualstudiocode,react,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,visualstudiocode,react,node
 
+# Personal
+user_authentication.txt
+
 ### macOS ###
 # General
 .DS_Store

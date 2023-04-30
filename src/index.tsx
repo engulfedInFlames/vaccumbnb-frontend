@@ -3,21 +3,27 @@ import ReactDOM from "react-dom/client";
 
 import { RouterProvider } from "react-router-dom";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import myRouter from "./Router";
 import theme from "./theme";
+
+// QueryClient은 fetch하는 모든 데이터들과 해당 데이터들의 데이터들을 가지고 있다. Fetch된 것, Fetch 중인 것 등등
+const client = new QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
 root.render(
-  <React.StrictMode>
+  <QueryClientProvider client={client}>
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <RouterProvider router={myRouter} />
     </ChakraProvider>
-  </React.StrictMode>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
 );
 
 /*

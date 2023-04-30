@@ -72,7 +72,18 @@ export default function SingupModal({ isOpen, onClose }: SignupModalProps) {
               <Input variant={"filled"} placeholder="nickname" />
             </InputGroup>
           </VStack>
-          <Button w={"100%"} bg={"pink.500"} color={"white"} fontSize={20}>
+          <Button
+            w={"100%"}
+            bg={"pink.500"}
+            color={"white"}
+            fontSize={20}
+            _hover={{
+              backgroundColor: "pink.200",
+            }}
+            _focus={{
+              backgroundColor: "pink.200",
+            }}
+          >
             Signup
           </Button>
           <SocialLogin />

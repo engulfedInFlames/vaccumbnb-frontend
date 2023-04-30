@@ -1,10 +1,17 @@
 import { Grid } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+
 import House from "../components/House";
 import HouseSkeleton from "../components/HouseSkeleton";
-import { useState } from "react";
+import { fetchHouses } from "../api";
+
+import { IHouseList } from "../types";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, data } = useQuery<IHouseList[]>(["houses"], fetchHouses, {
+    cacheTime: 1000 * 60,
+  });
+
   return (
     <Grid
       columnGap={8}
@@ -24,10 +31,25 @@ export default function Home() {
       py={8}
     >
       {isLoading
-        ? [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((index) => (
+        ? [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, index) => (
             <HouseSkeleton key={index} />
           ))
-        : null}
+        : data?.map((house, index) => (
+            <House
+              key={index}
+              pk={house.id}
+              imageUrl={
+                house.photos[0]?.file
+                  ? house.photos[0].file
+                  : "https://placehold.co/600x400"
+              }
+              city={house.city}
+              country={house.country}
+              description={house.description}
+              rating={house.rating}
+              price={house.price}
+            />
+          ))}
     </Grid>
   );
 }
