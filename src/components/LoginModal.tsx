@@ -12,12 +12,15 @@ import {
   ModalOverlay,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { MdAlternateEmail, MdLock } from "react-icons/md";
 
 import SocialLogin from "./SocialLogin";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { userLogin } from "../api";
+import { IUserLoginResult, IUserLoginVars } from "../types";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -36,11 +39,42 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     register,
     handleSubmit,
     formState: { errors },
+    // setValue : modify the value of a specific field.
+    reset,
   } = useForm<IForm>();
-  const onSubmit = (data: IForm) => {
-    console.log(data);
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<
+    IUserLoginResult,
+    IUserLoginResult,
+    IUserLoginVars
+  >(userLogin, {
+    onMutate: () => {
+      // Mutation이 진행 중일 때 실행된다.
+      console.log("Mutation is in progess.");
+    },
+    onSuccess: () => {
+      console.log("Mutation is successful.");
+      toast({
+        title: "Welcome!",
+        description: "Login is successful!",
+        status: "success",
+        position: "bottom-right",
+        duration: 3000,
+      });
+      onClose();
+      reset();
+      queryClient.refetchQueries(["me"]);
+    },
+    onError: () => {
+      console.log("Mutation has an error.");
+    },
+  });
+
+  const onSubmit = ({ username, password }: IForm) => {
+    mutation.mutate({ username, password });
   };
-  console.log(errors);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset={"slideInBottom"}>
@@ -84,7 +118,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               />
             </InputGroup>
           </VStack>
+          {mutation.isError ? (
+            <Text color="red.500" textAlign={"center"} fontSize={"sm"} mb={4}>
+              Username or Password is invalid
+            </Text>
+          ) : null}
           <Button
+            isLoading={mutation.isLoading}
             type="submit"
             w={"100%"}
             bg={"pink.500"}

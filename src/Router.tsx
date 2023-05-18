@@ -5,6 +5,7 @@ import NotFound from "./routes/NotFound";
 import HouseDetail from "./routes/HouseDetail";
 import GithubConfirm from "./routes/GithubConfirm";
 import KakaoConfirm from "./routes/KakaoConfirm";
+import HouseUpload from "./routes/HouseRegister";
 
 const myRouter = createBrowserRouter(
   [
@@ -15,6 +16,11 @@ const myRouter = createBrowserRouter(
         {
           path: "",
           element: <Home />,
+          errorElement: <NotFound />,
+        },
+        {
+          path: "houses/upload",
+          element: <HouseUpload />,
           errorElement: <NotFound />,
         },
         {

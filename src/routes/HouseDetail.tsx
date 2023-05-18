@@ -56,12 +56,14 @@ export default function HouseDetail() {
             rowSpan={index === 0 ? 2 : 1}
           >
             <Skeleton isLoaded={!isDetailLoading} w="100%" h="100%">
-              <Image
-                w="100%"
-                h="100%"
-                objectFit={"cover"}
-                src={detailData?.photos[index].file}
-              />
+              {detailData?.photos && detailData.photos.length > 0 ? (
+                <Image
+                  w="100%"
+                  h="100%"
+                  objectFit={"cover"}
+                  src={detailData?.photos[index].file}
+                />
+              ) : null}
             </Skeleton>
           </GridItem>
         ))}

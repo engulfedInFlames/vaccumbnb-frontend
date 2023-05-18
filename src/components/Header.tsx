@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import {
   Avatar,
   Box,
@@ -14,24 +12,34 @@ import {
   MenuList,
   Stack,
   Text,
+  ToastId,
   useColorMode,
   useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+
+import { useRef } from "react";
+import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaAirbnb, FaMoon } from "react-icons/fa";
 import { MdWbSunny } from "react-icons/md";
-import { useQueryClient } from "@tanstack/react-query";
 
 import LoginModal from "./LoginModal";
 import SingupModal from "./SignupModal";
-import useUser from "../lib/useUser";
 import { logout } from "../api";
+import { IMe } from "../types";
 
-export default function Header() {
+interface IHeaderProps {
+  user: IMe | null;
+  isUserLoading: boolean;
+}
+
+export default function Header({ user, isUserLoading }: IHeaderProps) {
   const queryClient = useQueryClient();
   const logoutToast = useToast();
-  const { isUserLoading, isLoggedIn, user } = useUser();
+  const toastId = useRef<ToastId>();
+
   const {
     isOpen: isLoginOpen,
     onClose: onLoginClose,
@@ -42,20 +50,35 @@ export default function Header() {
     onClose: onSignupClose,
     onOpen: onSignupOpen,
   } = useDisclosure();
+
+  const mutation = useMutation(logout, {
+    onMutate: () => {
+      toastId.current = logoutToast({
+        title: "Now Logout...",
+        status: "loading",
+        position: "bottom-right",
+      });
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries(["me"]);
+      logoutToast.update(toastId.current!, {
+        title: "Logout Success!",
+        status: "success",
+        position: "bottom-right",
+        duration: 3000,
+      });
+    },
+    onError: () => {
+      logoutToast.update(toastId.current!, {
+        title: "Logout Failed.",
+        status: "error",
+        position: "bottom-right",
+        duration: 3000,
+      });
+    },
+  });
   const onLogout = async () => {
-    const toastId = logoutToast({
-      title: "Now logout...",
-      status: "loading",
-      position: "bottom-right",
-    });
-    await logout();
-    queryClient.refetchQueries(["me"]);
-    logoutToast.update(toastId, {
-      title: "Logout success!",
-      status: "success",
-      position: "bottom-right",
-      duration: 3000,
-    });
+    mutation.mutate();
   };
 
   const { toggleColorMode } = useColorMode();
@@ -95,7 +118,7 @@ export default function Header() {
             icon={<DarkModeIcon />}
             variant={"ghost"}
           />
-          {!isUserLoading && !isLoggedIn ? (
+          {!isUserLoading && !user ? (
             <>
               <Button onClick={onLoginOpen} w={24}>
                 Login
@@ -125,6 +148,12 @@ export default function Header() {
                   <Avatar name={user?.name} src={user?.avatar} />
                 </MenuButton>
                 <MenuList>
+                  {user?.is_host ? (
+                    <Link to="/houses/upload">
+                      <MenuItem>Register House</MenuItem>
+                    </Link>
+                  ) : null}
+
                   <MenuItem onClick={onLogout}>Logout</MenuItem>
                 </MenuList>
               </Menu>

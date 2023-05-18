@@ -23,8 +23,15 @@ export interface IHouseHost {
 }
 
 export interface IAmenity {
+  id: number;
   name: string;
   description: string;
+}
+
+export interface ICategory {
+  id: number;
+  name: string;
+  kind: string;
 }
 
 export interface IHouseDetail extends IHouseList {
@@ -68,4 +75,40 @@ export interface IMe {
   is_host: boolean;
   last_login: string;
   date_joined: string;
+}
+
+// Form Interface
+interface IHouseReigsterForm {
+  name: string;
+  country: string;
+  city: string;
+  price: number;
+  rooms: number;
+  toilets: number;
+  description: string;
+  address: string;
+  pet_allowed: boolean;
+  kind: string;
+  host: string;
+  amenities: number[];
+  category: number;
+}
+
+// Login Interface
+export interface IUserLoginVars {
+  username: string;
+  password: string;
+}
+
+export interface IUserLoginResult {
+  result: string;
+}
+
+export interface IUserLoginResult {
+  result: string;
+}
+
+export interface IUseUserResult {
+  isUserLoading: Boolean;
+  user: IMe | null;
 }

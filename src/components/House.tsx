@@ -8,7 +8,7 @@ import {
   VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { BsFillSuitHeartFill } from "react-icons/bs";
+import { BsSuitHeart } from "react-icons/bs";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -47,10 +47,10 @@ export default function House({
             variant={"unstyled"}
             position={"absolute"}
             zIndex={999}
-            top={3}
+            top={0}
             right={2}
           >
-            <BsFillSuitHeartFill size={24} color="rgba(0,0,0,0.5)" />
+            <BsSuitHeart size={24} color="rgba(255,255,255,1)" />
           </Button>
         </VStack>
         <VStack spacing={-0.5} alignItems={"flex-start"} userSelect={"none"}>

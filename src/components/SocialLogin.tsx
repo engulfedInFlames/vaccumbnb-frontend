@@ -29,7 +29,7 @@ export default function () {
           fontSize={"xs"}
           as="b"
         >
-          Or
+          OR
         </Text>
         <Divider />
       </HStack>
